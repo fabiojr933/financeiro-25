@@ -1,0 +1,412 @@
+<%- include('../partials/header.ejs') %>
+
+<body class="hold-transition sidebar-mini">
+  <div class="wrapper">
+
+    <%- include('../partials/navbar.ejs') %>
+    <%- include('../partials/menu.ejs') %>
+
+    <div class="content-wrapper">
+      <section class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1>Gráficos</h1>
+            </div>
+            <div class="col-sm-6">
+              <form action="/grafico_data/index" method="post" class="form-inline justify-content-md-end">
+                <label class="mr-2 mb-2 mb-sm-0"><strong>Pesquisa:</strong></label>
+                <input type="date" value="<%= data_inicio %>" name="data_inicio" class="form-control form-control-sm mr-2 mb-2 mb-sm-0" required>
+                <input type="date"value="<%= data_fim %>" name="data_fim" class="form-control form-control-sm mr-2 mb-2 mb-sm-0" required>
+                <button type="submit" class="btn btn-primary btn-sm mb-2 mb-sm-0">Buscar</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="card-header">
+        <%- messages.info ? `
+          <div class="alert alert-info alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            ${messages.info}
+          </div>` : '' 
+        %>
+      </div>
+
+     <section class="content">
+  <div class="card">
+    <div class="card-body">
+      <div class="row mb-3">
+        <div class="col-sm-12"></div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">
+                Total de entrada por usuário período 
+                <%= new Date(data_inicio + 'T00:00:00').toLocaleDateString('pt-BR') %> - 
+                <%= new Date(data_fim + 'T00:00:00').toLocaleDateString('pt-BR') %>
+              </h3>
+            </div>
+            <div class="card-body">
+              <% if (entrada_por_usuario.length === 0) { %>
+                <div class="">
+                  🚫 Nenhum lançamento de entrada encontrado.
+                </div>
+              <% } else { %>
+                <canvas id="doughnut_usuario_entrada" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+              <% } %>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-6">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">
+                Total de saída por usuário período 
+                <%= new Date(data_inicio + 'T00:00:00').toLocaleDateString('pt-BR') %> - 
+                <%= new Date(data_fim + 'T00:00:00').toLocaleDateString('pt-BR') %>
+              </h3>
+            </div>
+            <div class="card-body">
+              <% if (despesa_por_usuario.length === 0) { %>
+                <div class="">
+                  🚫 Nenhum lançamento de saída encontrado.
+                </div>
+              <% } else { %>
+                <canvas id="doughnut" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">
+                Total por forma de pagamento período 
+                <%= new Date(data_inicio + 'T00:00:00').toLocaleDateString('pt-BR') %> - 
+                <%= new Date(data_fim + 'T00:00:00').toLocaleDateString('pt-BR') %>
+              </h3>
+            </div>
+            <div class="card-body">
+              <% if (forma_pagamento.length === 0) { %>
+                <div class="">
+                  🚫 Nenhuma forma de pagamento encontrada.
+                </div>
+              <% } else { %>
+                <canvas id="myChart_formaPagamento" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+              <% } %>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-6">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">
+                Total por tipo período 
+                <%= new Date(data_inicio + 'T00:00:00').toLocaleDateString('pt-BR') %> - 
+                <%= new Date(data_fim + 'T00:00:00').toLocaleDateString('pt-BR') %>
+              </h3>
+            </div>
+            <div class="card-body">
+              <% if (total_forma_tipo.length === 0) { %>
+                <div class="">
+                  🚫 Nenhum tipo de movimentação encontrado.
+                </div>
+              <% } else { %>
+                <canvas id="myChart_forma_tipo" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">
+                Total agrupado por fluxo financeiro período 
+                <%= new Date(data_inicio + 'T00:00:00').toLocaleDateString('pt-BR') %> - 
+                <%= new Date(data_fim + 'T00:00:00').toLocaleDateString('pt-BR') %>
+              </h3>
+            </div>
+            <div class="card-body">
+              <% if (total_fluxo.length === 0) { %>
+                <div class="">
+                  🚫 Nenhum fluxo financeiro encontrado.
+                </div>
+              <% } else { %>
+                <canvas id="myChart_total_agrupado_fluxo" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+    </div>
+
+    <!-- Tela de Loading -->
+    <div id="loading_contatos" style="
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    ">
+      <img src="/img/loading.gif" alt="Carregando..." width="100" />
+      <p style="margin-top: 10px; color: #fff; font-size: 20px; text-shadow: 0 0 5px rgba(0,0,0,0.7);">
+        Importando contatos, aguarde...
+      </p>
+    </div>
+
+    <%- include('../partials/footer.ejs') %>
+
+    <aside class="control-sidebar control-sidebar-dark"></aside>
+  </div>
+
+  <%- include('../partials/script.ejs') %>
+
+
+  
+  <script>
+  const total_agrupado_fluxo = <%- JSON.stringify(total_fluxo) %>;
+
+
+  const labels_total_agrupado_fluxo = total_agrupado_fluxo.map(item => item.origem_nome);   // Corrigido aqui
+  const dataValues_total_agrupado_fluxo = total_agrupado_fluxo.map(item => parseFloat(item.total));
+
+  const backgroundColors_total_agrupado_fluxo = [
+    'rgb(255, 99, 132)',
+    'rgb(54, 162, 235)',
+    'rgb(255, 205, 86)',
+    'rgb(75, 192, 192)',
+    'rgb(153, 102, 255)',
+    'rgb(255, 159, 64)'
+  ];
+
+  const ctx_total_agrupado_fluxo = document.getElementById('myChart_total_agrupado_fluxo');
+
+  new Chart(ctx_total_agrupado_fluxo, {
+    type: 'bar',
+    data: {
+      labels: labels_total_agrupado_fluxo,
+      datasets: [{
+        label: 'Total por Tipo',
+        data: dataValues_total_agrupado_fluxo,
+        backgroundColor: backgroundColors_total_agrupado_fluxo.slice(0, dataValues_total_agrupado_fluxo.length),
+        borderColor: '#007bff',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+</script>
+
+
+
+  <script>
+  const total_forma_tipo = <%- JSON.stringify(total_forma_tipo) %>;
+
+  console.log(total_forma_tipo);  // Verificar se tem dados
+
+  const labels_forma_tipo = total_forma_tipo.map(item => item.origem_tipo);   // Corrigido aqui
+  const dataValues_forma_tipo = total_forma_tipo.map(item => parseFloat(item.total));
+
+  const backgroundColors_forma_tipo = [
+    'rgb(255, 99, 132)',
+    'rgb(54, 162, 235)',
+    'rgb(255, 205, 86)',
+    'rgb(75, 192, 192)',
+    'rgb(153, 102, 255)',
+    'rgb(255, 159, 64)'
+  ];
+
+  const ctx_forma_tipo = document.getElementById('myChart_forma_tipo');
+
+  new Chart(ctx_forma_tipo, {
+    type: 'bar',
+    data: {
+      labels: labels_forma_tipo,
+      datasets: [{
+        label: 'Total por Tipo',
+        data: dataValues_forma_tipo,
+        backgroundColor: backgroundColors_forma_tipo.slice(0, dataValues_forma_tipo.length),
+        borderColor: '#007bff',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+</script>
+
+
+
+  
+<script>
+  const formaPagamento = <%- JSON.stringify(forma_pagamento) %>;
+
+  const labels_formaPagamento = formaPagamento.map(item => item.nome);
+  const dataValues_formaPagamento = formaPagamento.map(item => parseFloat(item.total));
+
+  const backgroundColors = [
+        'rgb(255, 99, 132)',
+        'rgb(54, 162, 235)',
+        'rgb(255, 205, 86)',
+        'rgb(75, 192, 192)',
+        'rgb(153, 102, 255)',
+        'rgb(255, 159, 64)'
+  ];
+
+  const ctx_formaPagamento = document.getElementById('myChart_formaPagamento');
+
+  new Chart(ctx_formaPagamento, {
+    type: 'bar',
+    data: {
+      labels: labels_formaPagamento,
+      datasets: [{
+        label: 'Total por Forma de Pagamento',
+        data: dataValues_formaPagamento,  // <- CORRIGIDO AQUI
+        backgroundColor: backgroundColors.slice(0, dataValues_formaPagamento.length),
+        borderColor: '#007bff',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+</script>
+
+
+
+<script>
+  // Dados passados do servidor (garanta que você enviou despesa_por_usuario no render do EJS)
+  const despesaPorUsuario = <%- JSON.stringify(despesa_por_usuario) %>;
+
+  // Montando labels e valores dinamicamente
+  const labels = despesaPorUsuario.map(item => item.nome);
+  const dataValues = despesaPorUsuario.map(item => parseFloat(item.total));
+
+  const data = {
+    labels: labels,
+    datasets: [{
+      label: 'Despesas por Usuário',
+      data: dataValues,
+      backgroundColor: [
+        'rgb(255, 99, 132)',
+        'rgb(54, 162, 235)',
+        'rgb(255, 205, 86)',
+        'rgb(75, 192, 192)',
+        'rgb(153, 102, 255)',
+        'rgb(255, 159, 64)'
+      ],
+      hoverOffset: 4
+    }]
+  };
+
+  const config = {
+    type: 'doughnut',
+    data: data,
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom'
+        }
+      }
+    },
+  };
+
+  const ctx2 = document.getElementById('doughnut');
+  new Chart(ctx2, config);
+</script>
+
+
+<script>
+  // Dados passados do servidor (garanta que você enviou despesa_por_usuario no render do EJS)
+  const entrada_por_usuario = <%- JSON.stringify(entrada_por_usuario) %>;
+
+  // Montando labels e valores dinamicamente
+  const labels_usuario_entrada = entrada_por_usuario.map(item => item.nome);
+  const dataValues_usuario_entrada = entrada_por_usuario.map(item => parseFloat(item.total));
+
+  const data_usuario_entrada = {
+    labels: labels_usuario_entrada,
+    datasets: [{
+      label: 'Entradas por Usuário',
+      data: dataValues_usuario_entrada,
+      backgroundColor: [
+        'rgb(255, 99, 132)',
+        'rgb(54, 162, 235)',
+        'rgb(255, 205, 86)',
+        'rgb(75, 192, 192)',
+        'rgb(153, 102, 255)',
+        'rgb(255, 159, 64)'
+      ],
+      hoverOffset: 4
+    }]
+  };
+
+  const config_usuario_entrada = {
+    type: 'doughnut',
+    data: data_usuario_entrada,
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom'
+        }
+      }
+    },
+  };
+
+  const ctx2_usuario_entrada = document.getElementById('doughnut_usuario_entrada');
+  new Chart(ctx2_usuario_entrada, config_usuario_entrada);
+</script>
+
+
+</body>
+</html>

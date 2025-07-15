@@ -1,0 +1,115 @@
+<%- include('../partials/header.ejs') %>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+<%- include('../partials/navbar.ejs') %>
+<%- include('../partials/menu.ejs') %>
+ 
+
+  <div class="content-wrapper">
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Sub Despesa</h1>
+          </div>
+          <div class="col-sm-6">
+           
+          </div>
+        </div>
+      </div>
+    </section>
+
+      <div class="card-header">
+     <%- messages.info ? `<div class="alert alert-info"> <button type="button" class="close" data-dismiss="alert"
+          aria-hidden="true" > &times; </button> ${messages.info}</div>` : '' %> </div>
+          
+    <section class="content">     
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Lista de sub despesa</h3>
+          <div class="card-tools">
+            <form action="/sub_despesa/novo" method="get" id="loginFormContato">
+            <button type="submit" id="btnImportar" class="btn btn-primary btn-block">Novo</button>
+          </form>
+          </div>
+        </div>
+        <div class="card-body">
+             <!-- /.card-header -->
+              <div class="card-body">
+               <table id="example1" class="table table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Sub despesa</th>
+                      <th>Despesa vinculado</th>
+                      <th>Ativo</th>
+                      <th style="width: 80px;">Ações</th> <!-- Nova coluna -->
+                    </tr>
+                  </thead>
+
+              <tbody>
+                <% dados.forEach(function(data){ %>
+                  <tr>
+                    <td><%- data.nome %></td>
+                    <td><%- data.nome_despesa %></td>
+                     <td>
+                    <span class="badge <%= data.status === 'S' ? 'bg-primary' : 'bg-danger' %>">
+                      <%= data.status === 'S' ? 'Ativo' : 'Inativo' %>
+                    </span>
+                  </td>
+                    <td>
+                      <a href="/sub_despesa/editar/<%= data.id %>" class="btn btn-sm btn-warning" title="Editar">
+                        <i class="fas fa-edit"></i>
+                      </a>
+                      <a href="/sub_despesa/deletar/<%= data.id %>" class="btn btn-sm btn-danger" title="Excluir" onclick="return confirm('Tem certeza que deseja excluir?')">
+                        <i class="fas fa-trash-alt"></i>
+                      </a>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+
+
+                </table>
+              </div>  		   
+        </div>        
+      </div>
+    </section>
+  </div>
+
+  <div id="loading_contatos" style="
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+">
+  <img src="/img/loading.gif" alt="Carregando..." width="100" />
+  <p style="margin-top: 10px; color: #fff; font-size: 20px; text-shadow: 0 0 5px rgba(0,0,0,0.7);">Importando sub_despesa aguarde...</p>
+</div>
+
+
+
+ <%- include('../partials/footer.ejs') %>
+  <aside class="control-sidebar control-sidebar-dark">
+  </aside>
+</div>
+ <%- include('../partials/script.ejs') %>
+
+
+
+<script>
+  document.getElementById('loginFormContato').addEventListener('submit', function (e) {
+    document.getElementById('loading_contatos').style.display = 'flex';
+  });
+</script>
+
+</body>
+</html>

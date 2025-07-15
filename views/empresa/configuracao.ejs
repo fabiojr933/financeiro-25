@@ -1,0 +1,142 @@
+<%- include('../partials/header.ejs') %>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+<%- include('../partials/navbar.ejs') %>
+<%- include('../partials/menu.ejs') %>
+ 
+
+  <div class="content-wrapper">
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Empresa</h1>
+          </div>
+          <div class="col-sm-6">
+           
+          </div>
+        </div>
+      </div>
+    </section>
+
+        <div class="card-header">
+     <%- messages.info ? `<div class="alert alert-info"> <button type="button" class="close" data-dismiss="alert"
+          aria-hidden="true" > &times; </button> ${messages.info} </div>` : '' %> </div>
+          
+    <section class="content">     
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Preencha os campos</h3>
+          <div class="card-tools">
+           <a href="/" type="submit" class="btn btn-primary btn-block">Voltar</a>  
+          </div>
+        </div>
+           <form action="/empresa/update" method="post">
+        <div class="card-body">          
+               <div class="row">
+                    <div class="col-sm-4">
+                         <label>Nome</label>    
+                          <input type="text" class="form-control" value="<%= dados[0].nome %>" name="nome" placeholder="Nome" readonly>   
+                          <input type="text" class="form-control" value="<%= dados[0].id %>" name="id" hidden>                    
+                    </div> 
+                   <div class="col-sm-4">
+                    <label>Telefone</label>    
+                    <input type="text" class="form-control" value="<%= dados[0].telefone %>" name="telefone" id="telefone" placeholder="(00) 00000-0000" required>                    
+                  </div>
+
+                    <div class="col-sm-4">
+                         <label>Endereço</label>    
+                          <input type="text" class="form-control" value="<%= dados[0].endereco %>" name="endereco" placeholder="Nome" required>                    
+                    </div> 
+                  </div>
+
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label>Enviar notificação</label>
+                <select class="form-control select2bs4" style="width: 100%;" id="config_notificacao" name="enviar_notificacao">
+                  <option value="S" <%= (dados[0].enviar_notificacao === 'S') ? 'selected' : '' %>>Sim</option>  
+                  <option value="N" <%= (!dados[0].enviar_notificacao || dados[0].enviar_notificacao == [] || dados[0].enviar_notificacao === 'N') ? 'selected' : '' %>>Não</option>                          
+                </select>
+              </div>           
+            </div>
+
+           <div class="col-sm-8" id="bloco-notificacao">
+            <div class="form-group">
+              <label>Seleciona o grupo para enviar notificação?</label>
+              <select class="form-control select2bs4" style="width: 100%;" id="tipo_notificacao" name="numero_notificacao" >
+             <% grupos.forEach(function(data){ %>   
+              <option value="<%= data.remoteJid %>" <%= data.remoteJid === numeroGrupo ? 'selected' : '' %> >
+                <%= data.pushName %>
+              </option>
+            <% }); %>                    
+              </select>           
+            </div>           
+          </div>
+          </div>
+
+
+                </div> 
+        </div>
+        <div class="card-footer">
+          <div class="row">
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-primary btn-block" >Salvar</button>
+            </div>
+          </div>
+
+        </form>
+
+      </div>
+    </section>
+  </div>
+
+ <%- include('../partials/footer.ejs') %>
+  <aside class="control-sidebar control-sidebar-dark">
+  </aside>
+</div>
+
+
+
+
+
+ <%- include('../partials/script.ejs') %>
+ 
+
+
+
+ <script>
+  $(document).ready(function() {
+    function verificarTipo() {
+      const tipo = $('#config_notificacao').val();
+
+      if (tipo === 'S') {       
+        $('#bloco-notificacao').show();     
+
+      } else {
+        $('#bloco-notificacao').hide();         
+      }
+    }
+
+    // Verifica ao carregar a página (caso já venha preenchido)
+    verificarTipo();
+
+    // Verifica toda vez que mudar o select
+    $('#config_notificacao').on('change', function() {
+      verificarTipo();
+    });
+  });
+</script>
+
+
+<script>
+  $(document).ready(function(){
+    $('#telefone').inputmask('(99) 99999-9999');
+  });
+</script>
+
+
+
+
+</body>
+</html>

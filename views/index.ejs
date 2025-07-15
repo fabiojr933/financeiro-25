@@ -1,0 +1,288 @@
+<%- include('partials/header.ejs') %>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+<%- include('partials/navbar.ejs') %>
+<%- include('partials/menu.ejs') %>
+ 
+
+  <div class="content-wrapper">
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Dashboard</h1> 
+          </div>         
+          <div class="col-sm-6">
+            <form action="/dashboard_data" method="post" class="form-inline justify-content-md-end">
+            <label class="mr-2 mb-2 mb-sm-0"><strong>Pesquisa :</strong></label>
+            <input type="date" value="<%= data_inicio %>" name="data_inicio" class="form-control form-control-sm mr-2 mb-2 mb-sm-0" required>
+            <input type="date" value="<%= data_fim %>"  name="data_fim" class="form-control form-control-sm mr-2 mb-2 mb-sm-0" required>
+            <button type="submit"  class="btn btn-primary btn-sm mb-2 mb-sm-0">Buscar</button>
+          </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+     <div class="card-header">
+     <%- messages.info ? `<div class="alert alert-info"> <button type="button" class="close" data-dismiss="alert"
+          aria-hidden="true" > &times; </button> ${messages.info}</div>` : '' %>
+    </div>      
+    <section class="content">     
+      <div class="container-fluid">
+         <div class="row">
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h4><strong>
+                  <%= new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total[0].total_receita) %>
+                </strong></h4>
+
+                <p>Receitas</p>
+              </div>             
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+              <div class="inner">
+               
+                <h4><strong>
+                <%= new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total[0].total_contas_receber) %>
+              </strong></h4>
+
+                <p>Contas a receber</p>
+              </div>             
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-warning">
+              <div class="inner">
+
+              <h4><strong>
+              <%= new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total[0].total_contas_pagar) %>
+            </strong></h4>
+
+                <p>Contas a pagar</p>
+              </div>             
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-danger">
+              <div class="inner">
+             
+                <h4><strong>
+                <%= new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total[0].total_despesa) %>
+              </strong></h4>
+
+                <p>Despesas</p>
+              </div>            
+            </div>
+          </div>
+          <!-- ./col -->
+        </div>
+      </div>
+
+
+       <div class="row">
+           <div class="col-sm-6">
+              <!-- TABLE: LATEST ORDERS -->
+            <div class="card">
+              <div class="card-header border-transparent">
+                <h3 class="card-title">Contas  a pagar para proximo 30 dias</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table m-0">
+                    <thead>
+                    <tr>                     
+                      <th>Descrição</th>
+                      <th>Status</th>
+                      <th>Parcela</th>
+                      <th>Vencimento</th>
+                      <th>Valor</th>
+                      <th>Ação</th>
+                    </tr>
+                    </thead>
+                    <tbody>    
+                       <% if (proximaReceber.length === 0) { %>
+              <tr>
+                <td colspan="6" class="text-center text-muted">
+                  Nenhuma conta a pagar nos próximos 30 dias.
+                </td>
+              </tr>
+            <% } else { %>               
+                     <% proximaPagar.forEach(function(data){ %>  
+                    <tr>                     
+                      <td><%- data.descricao %></td>
+                      <td><span class="badge badge-warning">Pendente</span></td>
+                      <td><%- data.parcela %></td>
+                     <td>
+                    <span class="badge badge-danger">
+                      <%= new Date(data.vencimento).toLocaleDateString('pt-BR') %>
+                    </span>
+                  </td>
+
+                  <td>
+                    <%= new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(data.valor_parcela) %>
+                  </td>
+                  <td>
+                    <a href="/contas_pagar/pagar/<%- data.id %>">Pagar</a>
+                  </td>
+                    </tr>
+                      <% }); %>
+                      <% } %>
+                  
+                    </tbody>
+                  </table>
+                </div>
+                <!-- /.table-responsive -->
+              </div>             
+              <!-- /.card-footer -->
+            </div>
+            </div>
+
+            <div class="col-sm-6">
+  <!-- TABLE: LATEST ORDERS -->
+  <div class="card">
+    <div class="card-header border-transparent">
+      <h3 class="card-title">Contas a receber para próximo 30 dias</h3>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table m-0">
+          <thead>
+            <tr>
+              <th>Descrição</th>
+              <th>Status</th>
+              <th>Parcela</th>
+              <th>Vencimento</th>
+              <th>Valor</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (proximaReceber.length === 0) { %>
+              <tr>
+                <td colspan="6" class="text-center text-muted">
+                  Nenhuma conta a receber nos próximos 30 dias.
+                </td>
+              </tr>
+            <% } else { %>
+              <% proximaReceber.forEach(function(data){ %>  
+                <tr>                     
+                  <td><%- data.descricao %></td>
+                  <td>
+                    <% if (data.pago) { %>
+                      <span class="badge badge-success">Pago</span>
+                    <% } else { %>
+                      <span class="badge badge-warning">Pendente</span>
+                    <% } %>
+                  </td>
+                  <td><%- data.parcela %></td>
+                  <td>
+                    <span class="badge badge-danger">
+                      <%= new Date(data.vencimento).toLocaleDateString('pt-BR') %>
+                    </span>                   
+                  </td>
+                  <td>
+                    <%= new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(data.valor_parcela) %>
+                  </td>
+                  <td>
+                    <a href="/contas_receber/receber/<%- data.id %>">Pagar</a>
+                  </td>
+                </tr>
+              <% }); %>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+      <!-- /.table-responsive -->
+    </div>             
+    <!-- /.card-footer -->
+  </div>
+</div>
+
+
+    </section>
+  </div>
+
+
+
+
+
+
+
+
+
+  
+
+ <%- include('partials/footer.ejs') %>
+  <aside class="control-sidebar control-sidebar-dark">
+  </aside>
+</div>
+
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var calendarEl = document.getElementById('calendar');
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      locale: 'pt-br',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      },
+      events: [
+        {
+          title: 'All Day Event',
+          start: '2025-07-01',
+          allDay: true
+        },
+        {
+          title: 'Long Event',
+          start: '2025-07-03',
+          end: '2025-07-05'
+        },
+        {
+          title: 'Meeting',
+          start: '2025-07-07T10:30:00',
+        },
+        {
+          title: 'Lunch',
+          start: '2025-07-07T12:00:00',
+        },
+        {
+          title: 'Birthday Party',
+          start: '2025-07-08T19:00:00'
+        },
+        {
+          title: 'Click for Google',
+          url: 'https://google.com/',
+          start: '2025-07-27'
+        }
+      ]
+    });
+
+    calendar.render();
+  });
+</script>
+
+
+
+ <%- include('partials/script.ejs') %>
+</body>
+</html>
+
+

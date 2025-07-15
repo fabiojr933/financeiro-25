@@ -1,0 +1,30 @@
+{
+  "name": "fabeco",
+  "version": "1.0.0",
+  "description": "Aplicativo",
+  "main": "main.js",
+  "scripts": {
+    "start": "nodemon main.js",
+    "dist": ""
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.4",
+    "axios": "^1.10.0",
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.2",
+    "child_process": "^1.0.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-flash": "github:RGBboy/express-flash",
+    "express-session": "^1.18.1",
+    "knex": "^3.1.0",
+    "moment": "^2.30.1",
+    "nodemon": "^3.1.10",
+    "npm": "^11.3.0",
+    "pg": "^8.16.0",
+    "uuid": "^11.1.0"
+  }
+}

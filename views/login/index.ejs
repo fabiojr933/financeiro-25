@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fox Sistemas</title>
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"
+    />
+    <link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css" />
+    <link
+      rel="stylesheet"
+      href="/plugins/icheck-bootstrap/icheck-bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="/dist/css/adminlte.min.css" />
+  </head>
+  <body class="hold-transition login-page">
+ 
+<div id="loading" style="
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+">
+  <img src="/img/loading.gif" alt="Carregando..." width="100" />
+  <p style="margin-top: 10px; color: #fff; font-size: 20px; text-shadow: 0 0 5px rgba(0,0,0,0.7);">Carregando! Estamos validando o usuario...</p>
+</div>
+
+
+
+    <div class="login-box">
+      <%- messages.info ? `
+      <div class="alert alert-info">
+        <button
+          type="button"
+          class="close"
+          data-dismiss="alert"
+          aria-hidden="true"
+        >
+          &times;
+        </button>
+        ${messages.info}
+      </div>
+      ` : '' %>
+      <div class="card card-outline card-primary">
+        <div class="card-header text-center">
+          <a href="#" class="h1"><b>Fox</b>Sistemas</a>
+        </div>
+        <div class="card-body">
+          <p class="login-box-msg">Login</p>
+
+          <form id="loginForm" action="/autenticar" method="POST">
+            <div class="input-group mb-3">
+              <input
+                type="email"
+                class="form-control"
+                placeholder="Email"
+                name="email"
+                id="email"         
+                required
+              />
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-envelope"></span>
+                </div>
+              </div>
+            </div>
+            <div class="input-group mb-3">
+              <input
+                type="password"
+                class="form-control"
+                placeholder="Senha"
+                name="senha"
+                id="senha" 
+                required
+              />
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-lock"></span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-8">
+                <div class="icheck-primary">
+                  <input type="checkbox" id="lembrar" checked name="lembrar" />
+                  <label for="lembrar"> Lembrar a senha </label>
+                </div>
+              </div>
+              <div class="col-4">
+                <button
+                  type="submit"
+                  id="btnLogin"
+                  class="btn btn-primary btn-block"
+                >
+                  Login
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+         <a href="/cadastrar" id="link-cadastro" class="text-center">Cadastrar-se</a> </br>
+      </div>
+    </div>
+
+<script>
+  document.getElementById('loginForm').addEventListener('submit', function (e) {
+    e.preventDefault(); // impede envio automático do formulário
+
+    const email = document.getElementById('email').value.trim();
+    const senha = document.getElementById('senha').value.trim();
+
+    if (!email || !senha) {
+      alert('Preencha todos os campos!');
+      return;
+    }
+
+    // Tudo ok: mostra o loading e envia o formulário
+    document.getElementById('loading').style.display = 'flex';
+    this.submit(); // envia o formulário agora
+  });
+</script>
+
+<script>
+  document.getElementById('link-cadastro').addEventListener('click', function (e) {
+    e.preventDefault(); // impede o redirecionamento
+    alert('Para usar o sistema, entre em contato com esse numero de whatsapp (66) 9-9953-9490');
+  });
+</script>
+
+    <script src="/plugins/jquery/jquery.min.js"></script>
+    <script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/dist/js/adminlte.min.js"></script>
+  </body>
+</html>

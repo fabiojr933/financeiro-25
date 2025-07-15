@@ -1,0 +1,91 @@
+<%- include('../partials/header.ejs') %>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+<%- include('../partials/navbar.ejs') %>
+<%- include('../partials/menu.ejs') %>
+ 
+
+  <div class="content-wrapper">
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Guardar dinheiro</h1>
+          </div>
+          <div class="col-sm-6">
+           
+          </div>
+        </div>
+      </div>
+    </section>
+
+        <div class="card-header">
+     <%- messages.info ? `<div class="alert alert-info"> <button type="button" class="close" data-dismiss="alert"
+          aria-hidden="true" > &times; </button> ${messages.info} </div>` : '' %> </div>
+          
+    <section class="content">     
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Preencha os campos</h3>
+          <div class="card-tools">
+           <a href="/dashboard" type="submit" class="btn btn-primary btn-block">Voltar</a>  
+          </div>
+        </div>
+        <form action="/cofrinho/guardar" method="post">
+        <div class="card-body">  
+                   <div class="row">
+                     <div class="col-sm-6">
+                    <label for="valor">Valor</label>
+                    <input type="text" class="form-control" name="valor_total" id="valor_total" placeholder="R$ 0,00" required>
+                  </div>
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                  <label>Fluxo</label>
+                  <select class="form-control select2bs4" style="width: 100%;" name="fluxo" required >   
+                    <% dados.forEach(function(data){ %>               
+                    <option value="<%- data.id %>" selected><%- data.nome %></option>  
+                    <% }); %>                         
+                  </select>
+                </div>           
+                    </div> 
+                  </div>
+
+
+                </div> 
+        </div>
+        <div class="card-footer">
+          <div class="row">
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-primary btn-block" >Guardar</button>
+            </div>
+          </div>
+
+        </form>
+
+      </div>
+    </section>
+  </div>
+
+ <%- include('../partials/footer.ejs') %>
+  <aside class="control-sidebar control-sidebar-dark">
+  </aside>
+</div>
+ <%- include('../partials/script.ejs') %>
+
+ <script>
+  const input = document.getElementById('valor_total');
+
+  input.addEventListener('input', () => {
+    let value = input.value.replace(/\D/g, ''); // Remove tudo que não for dígito
+    value = (parseInt(value, 10) / 100).toFixed(2); // Divide por 100 para representar centavos
+    value = value
+      .toString()
+      .replace('.', ',') // Converte para vírgula decimal
+      .replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Adiciona separadores de milhar
+
+    input.value = `R$ ${value}`;
+  });
+</script>
+
+</body>
+</html>

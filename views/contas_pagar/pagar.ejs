@@ -1,0 +1,150 @@
+<%- include('../partials/header.ejs') %>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+<%- include('../partials/navbar.ejs') %>
+<%- include('../partials/menu.ejs') %>
+ 
+
+  <div class="content-wrapper">  
+
+        <div class="card-header">
+     <%- messages.info ? `<div class="alert alert-info"> <button type="button" class="close" data-dismiss="alert"
+          aria-hidden="true" > &times; </button> ${messages.info} </div>` : '' %> </div>
+          
+    <section class="content">     
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Preencha os campos</h3>
+          <div class="card-tools">
+           <a href="/contas_pagar/pendente" type="submit" class="btn btn-primary btn-block">Voltar</a>  
+          </div>
+        </div>
+        <form action="/contas_pagar/pagamento" method="post">
+        <div class="card-body"> 
+
+             <div class="row">
+          <div class="col-12">        
+
+
+            <!-- Main content -->
+            <div class="invoice p-3 mb-3">
+              <!-- title row -->
+              <div class="row">
+                <div class="col-12">
+                  <h4>
+                    <i class="fas fa-globe"></i> Pagamento
+                    <small class="float-right"><span class="badge bg-primary">Preencha as informações abaixo</span></small>
+                  </h4>
+                </div>
+                <!-- /.col -->
+              </div>
+              <input name="id" value="<%= contaPagar[0].id %>" hidden />
+              <input name="origem_tipo" value="contas_pagar" hidden />
+              <input name="valor_parcela" value="<%= contaPagar[0].valor_parcela %>" hidden />
+              <input name="descricao" value="<%= contaPagar[0].descricao %>" hidden />
+              <input name="parcela" value="<%= contaPagar[0].parcela %>" hidden />
+              <!-- info row -->
+              <div class="row invoice-info">
+                <div class="col-sm-4 invoice-col">
+                 <label>Tipo</label>
+                    <select class="form-control select2bs4" style="width: 100%;" name="tipo">
+                    <option value="saida" selected="selected">Saida</option>
+                  </select>
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 invoice-col">                
+                   <label>Condição de pagamento</label>                   
+                    <select class="form-control select2bs4" style="width: 100%;" name="id_forma_pagamento">
+                     <% pagamento.forEach(function(data){ %>
+                      <option value="<%- data.id %>" ><%- data.nome %></option>
+                      <% }); %>
+                    </select>
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 invoice-col">
+                  <label>Despesa</label>
+                    <select class="form-control select2bs4" style="width: 100%;" name="origem_id">
+                  <% receita.forEach(function(data){ %>
+                    <option value="<%- data.id %>" ><%- data.nome %></option>
+                  <% }); %>
+                  </select>
+                </div>
+                <!-- /.col -->
+              </div> <br/>
+              <!-- /.row -->
+
+              <!-- Table row -->
+              <div class="row">
+                <div class="col-12 table-responsive">
+                  <table class="table table-striped">
+                    <thead>
+                    <tr>
+                      <th>Id</th>
+                      <th>Descrição</th>                  
+                      <th>Data emissão</th>
+                      <th>Data Vencimento</th>
+                      <th>Status</th>
+                      <th>Usuario</th>
+                      <th>Valor</th>
+                      <td>Parcela</td> 
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td><%= contaPagar[0].id %></td>
+                      <td><%= contaPagar[0].descricao %></td>
+
+                      <td><span class="badge bg-primary"><%= new Date(contaPagar[0].data_emissao).toLocaleDateString('pt-BR') %></span></td>
+                      <td><span class="badge bg-danger"><%= new Date(contaPagar[0].vencimento).toLocaleDateString('pt-BR') %></span></td>
+
+                        <td>
+                        <span class='badge bg-danger'>
+                      Pendente
+                        </span>
+                        </td>
+                       <td><%= contaPagar[0].usuario %></td>
+                        <td><span class="badge bg-danger">R$: <%= contaPagar[0].valor_parcela %></span></td>        
+                       <td><%= contaPagar[0].parcela %></td> 
+                      </tr>  
+                    </tbody>
+                  </table>
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->           
+
+            </div>
+            <!-- /.invoice -->
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+
+
+
+
+
+        </div> 
+        </div>
+        <div class="card-footer">
+         <div class="row">
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-primary btn-block" >Pagar</button>
+            </div>
+          </div>
+
+        </form>
+
+      </div>
+    </section>
+  </div>
+
+ <%- include('../partials/footer.ejs') %>
+  <aside class="control-sidebar control-sidebar-dark">
+  </aside>
+</div>
+ <%- include('../partials/script.ejs') %>
+</body>
+</html>
+
+
+
+

@@ -1,0 +1,146 @@
+<%- include('../partials/header.ejs') %>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+<%- include('../partials/navbar.ejs') %>
+<%- include('../partials/menu.ejs') %>
+ 
+
+  <div class="content-wrapper">
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>WhatsApp</h1>
+          </div>
+          <div class="col-sm-6">
+           
+          </div>
+        </div>
+      </div>
+    </section>
+
+      <div class="card-header">
+     <%- messages.info ? `<div class="alert alert-info"> <button type="button" class="close" data-dismiss="alert"
+          aria-hidden="true" > &times; </button> ${messages.info}</div>` : '' %> </div>
+          
+    <section class="content">     
+      <div class="card">
+        <div class="card-header">
+       
+          <div class="card-tools">
+            <form action="/whatsapp/desconectar" method="get" id="loginFormContato">
+            <button type="submit" id="btnImportar" class="btn btn-primary btn-block">Desconectar</button>
+          </form>
+          </div>
+        </div>
+        <div class="card-body">
+            
+            
+
+
+
+               <% if(data.status != 'open') { %>
+
+  <div class="row justify-content-center">
+  <div class="col-lg-10">
+    <div class="card card-outline card-success shadow">
+      <div class="card-body py-4 px-4">
+        <div class="row align-items-center">
+          <!-- Instruções -->
+          <div class="col-md-6 mb-4 mb-md-0">
+            <h4 class="font-weight-bold">Acessar o WhatsApp </h4>
+            <p class="text-muted">
+              Use o WhatsApp no seu navegador para enviar mensagens privadas para seus amigos e familiares.
+            </p>
+            <ol class="text-dark pl-3">
+              <li>Abra o WhatsApp no seu celular.</li>
+              <li>Toque em <strong>Mais opções</strong> <i class="fas fa-ellipsis-v"></i> no Android ou em <strong>Configurações</strong> <i class="fas fa-cog"></i> no iPhone.</li>
+              <li>Toque em <strong>Dispositivos conectados</strong> e, em seguida, em <strong>Conectar dispositivo</strong>.</li>
+              <li>Aponte seu celular para esta tela para escanear o QR code.</li>
+            </ol>
+          </div>
+
+          <!-- QR Code -->
+          <div class="col-md-6 text-center">
+            <img src="<%- data.qrcode %>" alt="QR Code" class="img-fluid" style="max-width: 280px;">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<br><br>
+
+<% } else { %>
+
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card card-outline card-success shadow">
+      <div class="card-body py-5 text-center">
+        <img src="/img/whatsapp_connected.png" alt="Conectado" class="mb-4" style="max-width: 150px;">
+        <h3 class="font-weight-bold text-success">WhatsApp Conectado com Sucesso!</h3>
+        <p class="text-muted mt-3">Seu dispositivo foi conectado ao WhatsApp Web e está pronto para o envio de mensagens.</p>
+
+        <div class="mt-4">
+          <a href="#" class="btn btn-success px-4">
+            Você esta pronto para enviar e monitorar as mensagens <i class="fas fa-paper-plane ml-2"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% } %>
+
+
+
+
+        </div>        
+      </div>
+    </section>
+  </div>
+
+  <div id="loading_contatos" style="
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+">
+  <img src="/img/loading.gif" alt="Carregando..." width="100" />
+  <p style="margin-top: 10px; color: #fff; font-size: 20px; text-shadow: 0 0 5px rgba(0,0,0,0.7);">Carregando aguarde...</p>
+</div>
+
+
+
+ <%- include('../partials/footer.ejs') %>
+  <aside class="control-sidebar control-sidebar-dark">
+  </aside>
+</div>
+ <%- include('../partials/script.ejs') %>
+
+<script>
+  setInterval(function() {
+    location.reload(); // Recarrega a página
+  }, 50000); // 10000 milissegundos = 50 segundos
+</script>
+
+
+<script>
+  document.getElementById('loginFormContato').addEventListener('submit', function (e) {
+    document.getElementById('loading_contatos').style.display = 'flex';
+  });
+</script>
+
+</body>
+</html>

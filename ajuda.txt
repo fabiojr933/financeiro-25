@@ -1,0 +1,10 @@
+knex migrate:make create_empresa --env dev      
+knex seed:make empresa.js --env dev
+knex migrate:latest --env dev
+npx knex seed:run
+
+
+npx knex migrate:latest --env dev  
+npx knex migrate:rollback --env dev
+
+npx knex seed:run --env dev 

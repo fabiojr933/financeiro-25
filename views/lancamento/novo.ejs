@@ -1,0 +1,307 @@
+<%- include('../partials/header.ejs') %>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+<%- include('../partials/navbar.ejs') %>
+<%- include('../partials/menu.ejs') %>
+ 
+
+  <div class="content-wrapper">
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Lançamento manual</h1>
+          </div>
+          <div class="col-sm-6">
+            
+          </div>
+        </div>
+      </div>
+    </section>
+
+        <div class="card-header">
+     <%- messages.info ? `<div class="alert alert-info"> <button type="button" class="close" data-dismiss="alert"
+          aria-hidden="true" > &times; </button> ${messages.info} </div>` : '' %> </div>
+          
+    <section class="content">     
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Preencha os campos</h3>
+          <div class="card-tools">
+           <a href="/lancamento/novo" type="submit" class="btn btn-primary btn-block">Voltar</a>  
+          </div>
+        </div>
+        <form action="/lancamento/salvar" method="post">
+        <div class="card-body">          
+               <div class="row">
+                    <div class="col-sm-12">
+                         <label>Nome</label>    
+                          <input type="text" class="form-control" name="descricao" placeholder="Descricao" required>                    
+                    </div> 
+                  </div>
+
+
+
+                 <div class="row">
+                   <div class="col-sm-3">
+                          <div class="form-group">
+                            <label>É parcelado?</label>
+                           <select class="form-control select2bs4" style="width: 100%;" id="id_parcelado" name="id_parcelado" required>                  
+                            <option value="S" >Sim</option>    
+                            <option value="N" selected>Não</option>                                
+                         </select>
+                        </div>           
+                    </div> 
+                      <div class="col-sm-3">
+                          <div class="form-group">
+                            <label>Tipo</label>
+                           <select class="form-control select2bs4" style="width: 100%;" id="tipo" name="tipo" required>                  
+                            <option value="entrada" >Entrada</option>    
+                            <option value="saida" >Saida</option>                                
+                         </select>
+                        </div>           
+                    </div>                    
+                   
+                    <div class="col-sm-6">
+                          <div class="form-group">
+                            <label>Condição de pagamento</label>
+                           <select class="form-control select2bs4" style="width: 100%;" name="id_forma_pagamento" required>                  
+                           <% pagamento.forEach(function(data){ %>   
+                         <option value="<%- data.id %>"><%- data.nome %></option>
+                         <% }); %>                               
+                         </select>
+                        </div>           
+                    </div> 
+                  </div>
+
+
+                  <div class="row">
+                  <div class="col-sm-3">
+                    <label for="valor">Valor Total</label>
+                    <input type="text" class="form-control" name="valor_total" id="valor_total" placeholder="R$ 0,00" required>
+                  </div>
+                  <div class="col-sm-3">
+                    <label for="parcela">Parcela</label>
+                    <input type="number" class="form-control" name="parcela" id="parcela" required >
+                  </div>
+                  <div class="col-sm-6" id="bloco-receita">
+                    <div class="form-group">
+                      <label>Receita</label>
+                      <select class="form-control select2bs4" style="width: 100%;" name="origem_id" required>
+                         <% receita.forEach(function(data){ %>   
+                         <option value="<%- data.id %>"><%- data.nome %></option>
+                         <% }); %>  
+                      </select>
+                    </div>
+                  </div>
+
+                   <div class="col-sm-6" id="bloco-despesa">
+                    <div class="form-group">
+                      <label>Despesa</label>
+                      <select class="form-control select2bs4" style="width: 100%;" name="origem_id" required>
+                           <% despesa.forEach(function(data){ %>
+                        <option value="<%- data.id %>"><%- data.nome %></option>
+                          <% }); %> 
+                      </select>
+                    </div>
+                  </div>
+
+                </div>
+
+
+                  
+            <div id="parcelas-container" class="mt-3"></div>
+
+
+               
+        </div>
+        <div class="card-footer">
+         <div class="row">
+            <div class="col-sm-2">
+                <button type="submit" class="btn btn-primary btn-block" id="btnSalvar">Salvar</button>
+            </div>
+          </div>
+        </div>
+
+        </form>
+
+      </div>
+    </section>
+  </div>
+
+ <%- include('../partials/footer.ejs') %>
+  <aside class="control-sidebar control-sidebar-dark">
+  </aside>
+</div>
+ <%- include('../partials/script.ejs') %>
+</body>
+</html>
+
+
+<script>
+  $(document).ready(function() {
+    function verificarTipo() {
+      const tipo = $('#tipo').val();
+
+      if (tipo === 'saida') {
+        $('#bloco-receita').hide();
+        $('#bloco-receita select').removeAttr('name'); // 🔑 Remove name para não enviar
+
+        $('#bloco-despesa').show();
+        $('#bloco-despesa select').attr('name', 'origem_id'); // 🔑 Adiciona name correto
+
+      } else {
+        $('#bloco-despesa').hide();
+        $('#bloco-despesa select').removeAttr('name'); // 🔑 Remove name para não enviar
+
+        $('#bloco-receita').show();
+        $('#bloco-receita select').attr('name', 'origem_id'); // 🔑 Adiciona name correto
+      }
+    }
+
+    // Verifica ao carregar a página (caso já venha preenchido)
+    verificarTipo();
+
+    // Verifica toda vez que mudar o select
+    $('#tipo').on('change', function() {
+      verificarTipo();
+    });
+  });
+</script>
+
+
+
+<script>
+  function calcularParcelas(valorTotal, numParcelas) {
+    let totalEmCentavos = Math.round(valorTotal * 100);
+    let valorParcelaInteira = Math.floor(totalEmCentavos / numParcelas);
+    let resto = totalEmCentavos - (valorParcelaInteira * numParcelas);
+
+    let parcelas = [];
+    for (let i = 0; i < numParcelas; i++) {
+      let valorParcela = valorParcelaInteira;
+      if (i < resto) valorParcela += 1;
+      parcelas.push((valorParcela / 100).toFixed(2));
+    }
+
+    return parcelas;
+  }
+
+  function formatarValor(valor) {
+    return 'R$ ' + valor.replace('.', ',');
+  }
+
+  function gerarParcelas() {
+    const idParcelado = $('#id_parcelado').val();
+    const parcelaInput = $('#parcela');
+    const container = $('#parcelas-container');
+
+    if (idParcelado === 'N') {
+      parcelaInput.val(1).prop('readonly', true);  // ✅ Coloca valor 1 e bloqueia o campo
+   //   container.empty(); // Limpa as parcelas se "Não"
+    //  return;
+    } else {
+      parcelaInput.prop('readonly', false);  // ✅ Libera o campo se "Sim"
+    }
+
+    const numParcelas = parseInt(parcelaInput.val());
+    const valorTotalTexto = $('#valor_total').val().replace(/\D/g, '');
+
+    if (!valorTotalTexto || isNaN(numParcelas) || numParcelas <= 0) {
+      container.empty();
+      return;
+    }
+
+    const valorTotal = parseFloat(valorTotalTexto) / 100;
+    const parcelas = calcularParcelas(valorTotal, numParcelas);
+
+    container.empty();
+
+    parcelas.forEach((valor, index) => {
+      container.append(`
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <label>Valor da parcela ${index + 1}</label>
+            <input type="text" class="form-control" name="valor_parcela[]" value="${formatarValor(valor)}" required>
+          </div>
+          <div class="col-sm-3">
+            <label>Parcela ${index + 1}</label>
+            <input type="text" class="form-control" name="numero_parcela[]" value="${index + 1}x" readonly required>
+          </div>
+          <div class="col-sm-3">
+            <label>Vencimento da parcela ${index + 1}</label>
+            <input type="date" class="form-control" name="vencimento[]" required>
+          </div>
+        </div>
+      `);
+    });
+  }
+
+  // Quando muda o select "É parcelado?"
+  $('#id_parcelado').on('change', function() {
+    gerarParcelas();
+  });
+
+  // Quando altera valor ou número de parcelas
+  $('#parcela, #valor_total').on('blur', function() {
+    gerarParcelas();
+  });
+</script>
+
+
+
+
+
+<script>
+  function parseValorBR(valor) {
+    return parseFloat(valor.replace('R$', '').replace(/\./g, '').replace(',', '.')) || 0;
+  }
+
+  $('#btnSalvar').on('click', function() {
+    const valorTotal = parseValorBR($('#valor_total').val());
+    let somaParcelas = 0;
+
+    $('input[name="valor_parcela[]"]').each(function() {
+      somaParcelas += parseValorBR($(this).val());
+    });
+
+    const valorTotalArredondado = parseFloat(valorTotal.toFixed(2));
+    const somaParcelasArredondado = parseFloat(somaParcelas.toFixed(2));
+
+    if (valorTotalArredondado !== somaParcelasArredondado) {
+      alert('❌ Erro: A soma das parcelas (' +
+        somaParcelasArredondado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) +
+        ') não bate com o valor total (' +
+        valorTotalArredondado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) +
+        ').');
+      return false;  // ⚠️ Impede envio
+    }
+
+    const vencimentos = $('input[name="vencimento[]"]').map(function() {
+      return $(this).val();
+    }).get();
+
+    let dataAnterior = null;
+    for (let i = 0; i < vencimentos.length; i++) {
+      const dataAtual = vencimentos[i];
+
+      if (!dataAtual) {
+        alert(`❌ Preencha a data da parcela ${i + 1}.`);
+        return false;  // ⚠️ Impede envio
+      }
+
+      const dataAtualDate = new Date(dataAtual);
+
+      if (dataAnterior && dataAtualDate < dataAnterior) {
+        alert(`❌ A data da parcela ${i + 1} (${dataAtual}) não pode ser menor que a parcela ${i}.`);
+        return false;  // ⚠️ Impede envio
+      }
+
+      dataAnterior = dataAtualDate;
+    }
+
+    // ✅ Se chegou até aqui, pode salvar:
+  //  alert('✅ Validação OK! Pode salvar.');
+ //   $('form').submit();
+  });
+</script>

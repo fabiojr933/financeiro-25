@@ -1,0 +1,171 @@
+<%- include('../partials/header.ejs') %>
+
+<body class="hold-transition sidebar-mini">
+  <div class="wrapper">
+
+    <%- include('../partials/navbar.ejs') %>
+    <%- include('../partials/menu.ejs') %>
+
+    <div class="content-wrapper">
+      <section class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1>Relatorios por usuario</h1>
+            </div>
+            <div class="col-sm-6">
+              <form action="/relatorio_data/index" method="post" class="form-inline justify-content-md-end">
+                <label class="mr-2 mb-2 mb-sm-0"><strong>Pesquisa:</strong></label>
+                <input type="date" value="<%= data_inicio %>" name="data_inicio" class="form-control form-control-sm mr-2 mb-2 mb-sm-0" required>
+                <input type="date"value="<%= data_fim %>" name="data_fim" class="form-control form-control-sm mr-2 mb-2 mb-sm-0" required>
+                <button type="submit" class="btn btn-primary btn-sm mb-2 mb-sm-0">Buscar</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="card-header">
+        <%- messages.info ? `
+          <div class="alert alert-info alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            ${messages.info}
+          </div>` : '' 
+        %>
+      </div>
+
+      <section class="content">
+        <div class="card">
+          <div class="card-body">
+            <div class="row mb-3">
+              <div class="col-sm-12">
+                <!-- Espaço para algo adicional se precisar -->
+              </div>
+            </div>
+
+            
+            
+
+<div class="row">
+
+  <% if (Object.keys(agrupadoPorUsuario).length === 0) { %>
+    <div class="col-sm-12">
+      <div class="alert alert-info text-center mt-3">
+        Nenhum lançamento encontrado no período selecionado.
+      </div>
+    </div>
+  <% } else { %>
+
+    <% Object.keys(agrupadoPorUsuario).forEach(function(usuario) { 
+         const dadosUsuario = agrupadoPorUsuario[usuario].dados || [];
+    %>
+      <div class="col-sm-6">
+        <div class="card">
+          <div class="card-header border-transparent">
+            <h3 class="card-title">Contas pagas de <%= usuario %></h3>
+          </div>
+
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table m-0">
+                <thead>
+                  <tr>
+                    <th>Descrição</th>
+                    <th>Pagamento</th>
+                    <th>Fluxo</th>
+                    <th>Parcela</th>
+                    <th>Valor</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (!dadosUsuario.length) { %>
+                    <tr>
+                      <td colspan="5" class="text-center text-muted">
+                        Nenhuma conta paga encontrada para este usuário.
+                      </td>
+                    </tr>
+                  <% } else { %>
+                    <% dadosUsuario.forEach(function(data) { %>
+                      <tr>
+                        <td><%- data.descricao %></td>
+                        <td>
+                          <span class="badge badge-primary">
+                            <%= new Date(data.data_lancamento).toLocaleDateString('pt-BR') %>
+                          </span>
+                        </td>
+                        <td><%- data.origem_nome %></td>
+                        <td><%- data.parcela %></td>
+                        <td>
+                          <%= new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(data.valor_parcela) %>
+                        </td>
+                      </tr>
+                    <% }); %>
+                    <tr>
+                      <td colspan="4" class="text-right"><strong>Total:</strong></td>
+                      <td>
+                        <strong>
+                          <%= new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(agrupadoPorUsuario[usuario].total || 0) %>
+                        </strong>
+                      </td>
+                    </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    <% }); %>
+
+  <% } %>
+
+</div>
+
+
+
+        
+        
+         
+
+
+
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Tela de Loading -->
+    <div id="loading_contatos" style="
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    ">
+      <img src="/img/loading.gif" alt="Carregando..." width="100" />
+      <p style="margin-top: 10px; color: #fff; font-size: 20px; text-shadow: 0 0 5px rgba(0,0,0,0.7);">
+        Importando contatos, aguarde...
+      </p>
+    </div>
+
+    <%- include('../partials/footer.ejs') %>
+
+    <aside class="control-sidebar control-sidebar-dark"></aside>
+  </div>
+
+  <%- include('../partials/script.ejs') %>
+
+
+
+
+</body>
+</html>
