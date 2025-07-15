@@ -32,8 +32,12 @@
 <script>
   $(function () {
     $("#example1").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false    
+      "responsive": true,
+      "lengthChange": false,
+      "autoWidth": false,
+      "order": [[0, "desc"]]  // <-- Adiciona essa linha para ordenar pela primeira coluna (ID) de forma decrescente
     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
     $('#example2').DataTable({
       "paging": true,
       "lengthChange": false,
