@@ -124,8 +124,19 @@
                   </tr>
 
                   <tr style="background: lightgrey">
-                    <td><b>(=) TOTAL DESPESAS</b></td>
+                    <td><b>(=) (-) TOTAL DE DESPESAS</b></td>
                     <td><b> <%= new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalDespesas) %></b></td>
+                    <td></td>
+                  </tr>
+                  <tr style="background: lightgrey">
+                    <td><b>(=) (+) TOTAL DE RECEITAS</b></td>
+                    <td><b> <%= new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalReceita) %></b></td>
+                    <td></td>
+                  </tr>
+
+                  <tr>
+                    <td style="padding-left: 50px;"> </td>
+                    <td></td>
                     <td></td>
                   </tr>
 
